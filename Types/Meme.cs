@@ -14,6 +14,11 @@ namespace MematorSQL.Types
         public List<Image> Images { get; set; } = new List<Image>();
 
 
+		public Meme() { }
+		public Meme(String name, Image image) {
+			Name = name;
+			Images.Add(image);
+		}
 
 
 		public Meme AddAlias(string alias)

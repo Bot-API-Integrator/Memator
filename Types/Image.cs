@@ -7,14 +7,16 @@ using System.Threading.Tasks;
 
 namespace MematorSQL.Types
 {
-    public class Image
-    {
-        public string Base64 { get; set; }
-        public string FileName { get; set; }
+	public class Image
+	{
+		public int Id { get; set; }
+		public string Base64 { get; set; }
+		public string FileName { get; set; }
 
-        public Image() { }
-        public Image(String path)
-        {
+		public Image() { }
+		public Image(String path)
+		{
+			FileName = path;
 			try
 			{
 				byte[] AsBytes = File.ReadAllBytes(path);
@@ -28,5 +30,5 @@ namespace MematorSQL.Types
 				Console.WriteLine(e.Message);
 			}
 		}
-    }
+	}
 }

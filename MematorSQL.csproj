@@ -33,6 +33,11 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+    <None Include="X:\Memator\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="X:\Memator\.editorconfig" />
   </ItemGroup>
 
 </Project>

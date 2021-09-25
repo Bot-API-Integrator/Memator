@@ -8,20 +8,21 @@ using System.Threading.Tasks;
 
 namespace MematorSQL
 {
-    public class AppContext : DbContext
-    {
-        public DbSet<Meme> Memes { get; set; }
+	public class AppContext : DbContext
+	{
+		public DbSet<Meme> Memes { get; set; }
+		public DbSet<Meme> RandomMemes { get; set; }
 
-        public AppContext()
-        {
-            Logger.Debug("Creating AppContext");
-            Database.EnsureCreated();
-        }
+		public AppContext()
+		{
+			Logger.Debug("Создание AppContext");
+			Database.EnsureCreated();
+		}
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            Logger.Debug("Called AppContext.OnConfiguring");
-            optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=memedb;Username=postgres;Password=25565");
-        }
-    }
+		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+		{
+			Logger.Debug("Вызван AppContext.OnConfiguring");
+			optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=memedb;Username=postgres;Password=25565");
+		}
+	}
 }
