@@ -10,7 +10,7 @@ namespace MematorSQL.Util
 {
 	public static class Extensions
 	{
-		public static byte[] ToBytes(this String base64)
+		public static byte[] FromBase64(this String base64)
 		{
 			return Convert.FromBase64String(base64);
 		}

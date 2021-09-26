@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace MematorSQL.Logic
 {
-	public static class ImagesDownloader
+	class TaskManager
 	{
-
 	}
 }

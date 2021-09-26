@@ -2,11 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using MematorSQL.Util;
+using System.Net;
 
 namespace MematorSQL.Logic
 {
@@ -25,9 +28,86 @@ namespace MematorSQL.Logic
 
 		private static int warnings = 0, errors = 0;
 
-		public static void Base64ToFile(String fileName, String base64)
+		public static void AddRandomMemeFromUrl(String url)
 		{
+			String hashName = url.GetHashCode() + (url.GetHashCode() * 17 * 23).ToString("X")+".png";
+			String fileName = DownloadToFile(url, hashName);
+		}
 
+		public static void AddRandomMemeFromBase64(String base64)
+		{
+			String hashName = base64.GetHashCode() + (base64.GetHashCode() * 17 * 23).ToString("X") + ".png";
+			String fileName = Base64ToFile(base64, hashName);
+		}
+
+		private static String Base64ToFile(String base64, String fileName)
+		{
+			if (started)
+			{
+				String path = savePath;
+
+				Bitmap bitmap;
+				Stream base64Stream = base64.FromBase64().ToStream();
+				bitmap = new Bitmap(base64Stream);
+
+				try
+				{
+					if (bitmap != null)
+					{
+						bitmap.Save(fileName);
+						return Path.Combine(path,fileName);
+					}
+				}
+				catch (Exception e)
+				{
+					Logger.Error(e.Message);
+				}
+
+				base64Stream.Close(); 
+			}
+			else
+			{
+				NotRunning();
+			}
+			return null;
+		}
+
+		private static String DownloadToFile(String url, String fileName)
+		{
+			if(started)
+			{
+				String path = savePath;
+				try
+				{
+					WebClient client = new WebClient();
+					Stream stream = client.OpenRead(url);
+					Bitmap bitmap; bitmap = new Bitmap(stream);
+
+					if (bitmap != null)
+						bitmap.Save(fileName);
+
+					stream.Flush();
+					stream.Close();
+					client.Dispose();
+
+					return Path.Combine(path,fileName);
+				}
+				catch (Exception e)
+				{
+					Logger.Error(e.Message);
+				}
+			}
+			else
+			{
+				NotRunning();
+			}
+
+			return null;
+		}
+
+		private static void NotRunning()
+		{
+			Logger.Warning("Поставщик изображений ещё не запущен");
 		}
 	}
 }
