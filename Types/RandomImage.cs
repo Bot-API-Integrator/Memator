@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace MematorSQL.Types
 {
-	public class Image
+	public class RandomImage
 	{
 		public int Id { get; set; }
 		public string Base64 { get; set; }
 		public string FileName { get; set; }
 
-		public Image() { }
-		public Image(String path)
+		public RandomImage() { }
+		public RandomImage(String path)
 		{
 			FileName = path;
 			try

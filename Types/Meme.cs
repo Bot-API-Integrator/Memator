@@ -11,7 +11,7 @@ namespace MematorSQL.Types
         public int Id { get; set; }
         public String Name { get; set; }
         public List<string> Aliases { get; set; } = new List<string>();
-        public List<Image> Images { get; set; } = new List<Image>();
+        public virtual List<Image> Images { get; set; } = new List<Image>();
 
 
 		public Meme() { }

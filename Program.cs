@@ -7,9 +7,9 @@ namespace MematorSQL
 	{
 		static void Main(string[] args)
 		{
-			Logger.Log("Запущен Memator v 0.1 pre-apha-in-dev-please-do-not-use-that-shit-god-please-no");
+			Logger.Log("Запущен Memator v 0.2 pre-apha-in-dev-please-do-not-use-that-shit-god-please-no");
 
-			Logger.DEBUG = true;
+			Logger.DEBUG = false;
 			SettingsProvider.Load();
 
 			if (SettingsProvider.CURRENT.CLEAR_DB_ON_START)

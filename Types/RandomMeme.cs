@@ -10,10 +10,10 @@ namespace MematorSQL.Types
 	{
 		public int Id { get; set; }
 		public String Name { get; set; }
-		public Image Image { get; set; }
+		public RandomImage Image { get; set; }
 
 		public RandomMeme() { }
-		public RandomMeme(String name, Image image)
+		public RandomMeme(String name, RandomImage image)
 		{
 			Name = name;
 			Image = image;

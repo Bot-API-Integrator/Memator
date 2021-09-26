@@ -47,13 +47,15 @@ namespace MematorSQL.Logic
 		/// Сериализует текущие настройки в формат JSON
 		/// </summary>
 		/// <param name="settings"></param>
-		public static void PrintSettingsJson(Settings settings)
+		public static String SerializeSettingsJson(Settings settings)
 		{
+
 			var options = new JsonSerializerOptions
 			{
 				WriteIndented = true
 			};
-			Logger.Success(JsonSerializer.Serialize(settings, options));
+			var jsonCode = JsonSerializer.Serialize(settings, options);
+			return jsonCode;
 		}
 
 		/// <summary>
@@ -73,10 +75,15 @@ namespace MematorSQL.Logic
 				Logger.Error($"Используются настройки по умолчанию");
 
 				current = _debug;
+
+				File.WriteAllText(settingsFileName, SerializeSettingsJson(CURRENT));
 			}
 
 			loaded = true;
-			PrintSettingsJson(CURRENT);
+			if (CURRENT.DEBUG)
+			{
+				Logger.Debug(SerializeSettingsJson(CURRENT));
+			}
 		}
 	}
 }
