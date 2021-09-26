@@ -40,4 +40,10 @@
     <EditorConfigFiles Remove="X:\Memator\.editorconfig" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="AppSettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

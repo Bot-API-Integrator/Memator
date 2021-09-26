@@ -10,8 +10,9 @@ namespace MematorSQL
 {
 	public class AppContext : DbContext
 	{
+		private const string _connectionString = "Host=localhost;Port=5432;Database=memedb;Username=postgres;Password=25565";
 		public DbSet<Meme> Memes { get; set; }
-		public DbSet<Meme> RandomMemes { get; set; }
+		public DbSet<RandomMeme> RandomMemes { get; set; }
 
 		public AppContext()
 		{
@@ -22,7 +23,7 @@ namespace MematorSQL
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
 			Logger.Debug("Вызван AppContext.OnConfiguring");
-			optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=memedb;Username=postgres;Password=25565");
+			optionsBuilder.UseNpgsql(_connectionString);
 		}
 	}
 }

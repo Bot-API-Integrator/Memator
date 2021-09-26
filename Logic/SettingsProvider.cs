@@ -1,27 +1,82 @@
 ﻿using MematorSQL.Types;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace MematorSQL.Logic
 {
 	public static class SettingsProvider
 	{
-		public static Settings DEBUG { get; private set; } = new Settings("DEBUG")
+		private static bool loaded = false;
+		private const String settingsFileName = "AppSettings.json";
+		private static readonly Settings _debug = new Settings("DEBUG")
 		{
 			DEBUG = true,
 			CLEAR_DB_ON_START = true
 		};
-		public static Settings DEFAULT { get; private set; } = new Settings()
+
+		private static readonly Settings _default = new Settings()
 		{
 			DEBUG = false,
 			CLEAR_DB_ON_START = false
 		};
 
-		public static Settings CURRENT { get; private set; } = DEBUG;
+		private static Settings current;
+
+		public static Settings CURRENT
+		{
+			get
+			{
+				if (loaded)
+					return current;
+				return null;
+			}
+			private set
+			{
+				if (loaded)
+					current = value;
+			}
+		}
 
 
+		/// <summary>
+		/// Сериализует текущие настройки в формат JSON
+		/// </summary>
+		/// <param name="settings"></param>
+		public static void PrintSettingsJson(Settings settings)
+		{
+			var options = new JsonSerializerOptions
+			{
+				WriteIndented = true
+			};
+			Logger.Success(JsonSerializer.Serialize(settings, options));
+		}
+
+		/// <summary>
+		/// Загружает настройки из файла или применяет стандартные в случае Зггога
+		/// </summary>
+		public static void Load()
+		{
+			string jsonCode;
+			try
+			{
+				jsonCode = File.ReadAllText(settingsFileName);
+				current = JsonSerializer.Deserialize<Settings>(jsonCode);
+			}
+			catch (Exception e)
+			{
+				Logger.Error($"Ошибка загрузки файла настроек: {e.Message}");
+				Logger.Error($"Используются настройки по умолчанию");
+
+				current = _debug;
+			}
+
+			loaded = true;
+			PrintSettingsJson(CURRENT);
+		}
 	}
 }

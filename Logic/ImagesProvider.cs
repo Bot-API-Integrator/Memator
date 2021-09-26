@@ -41,13 +41,22 @@ namespace MematorSQL.Logic
 					if (db.Memes.Count() == 0)
 					{
 						FillMemesDb(db);
-						FillRandomDb(db);
 					}
 					else
 					{
 						UpdateMemesDb(db);
+					}
+
+					if (db.RandomMemes.Count() == 0)
+					{
+						FillRandomDb(db);
+					}
+					else
+					{
 						UpdateRandomDb(db);
 					}
+
+					TestMemesFirstEntry(db);
 				}
 			}
 			else
@@ -65,6 +74,7 @@ namespace MematorSQL.Logic
 		private static void UpdateRandomDb(AppContext db)
 		{
 			// throw new NotImplementedException();
+			Logger.Log($"В таблице случайных мемов есть {db.RandomMemes.Count()} записей");
 		}
 
 		/// <summary>
@@ -73,6 +83,7 @@ namespace MematorSQL.Logic
 		/// <param name="db"></param>
 		private static void UpdateMemesDb(AppContext db)
 		{
+			Logger.Log($"В таблице мемов есть {db.Memes.Count()} записей");
 			// throw new NotImplementedException();
 		}
 
@@ -82,7 +93,39 @@ namespace MematorSQL.Logic
 		/// <param name="db"></param>
 		private static void FillRandomDb(AppContext db)
 		{
-			// throw new NotImplementedException();
+			var files = new List<String>(Directory.GetFiles(randomPath));
+			var memes = new List<RandomMeme>();
+
+			var _warnings = 0;
+			var _errors = 0;
+			var _memesCount = files.Count;
+
+			Stopwatch sw = new Stopwatch();
+
+			Logger.Log("База данных случайных мемов пуста. Сканирование МеМеСоВ");
+			sw.Start();
+
+			foreach (var file in files)
+			{
+				var fileName = Path.GetFileName(file);
+				memes.Add(new RandomMeme(fileName, new Image(file)));
+				Logger.Debug($"Найден мем {fileName}");
+			}
+
+			sw.Stop();
+			Logger.Success($"Время затраченное на сканирование случайных мемов: {((int)sw.Elapsed.TotalMilliseconds)} мс");
+
+			sw = new Stopwatch();
+			sw.Start();
+			db.RandomMemes.AddRange(memes);
+			db.SaveChanges();
+			sw.Stop();
+			Logger.Success($"Время затраченное на запись: {((int)sw.Elapsed.TotalMilliseconds)} мс. " +
+				$"Записано {_memesCount} мемов");
+
+			PrintWarnings(_warnings, _errors);
+			warnings += _warnings;
+			errors += _errors;
 		}
 
 
@@ -105,8 +148,13 @@ namespace MematorSQL.Logic
 
 			var _warnings = 0;
 			var _errors = 0;
+			var _memesCount = 0;
+			var _imagesCount = 0;
 
-			Logger.Log("База данных пуста. Сканирование МеМеСоВ");
+			Stopwatch sw = new Stopwatch();
+
+			Logger.Log("База данных мемов пуста. Сканирование МеМеСоВ");
+			sw.Start();
 			foreach (var file in files)
 			{
 				MatchCollection matches = regex.Matches(Path.GetFileName(file));
@@ -119,7 +167,7 @@ namespace MematorSQL.Logic
 					{
 						_grp += group.Value + (groups.Last() == group ? "" : ", ");
 					}
-					Logger.Debug("Совпадение: \"" + match.Value + "\". Группы: " + _grp);
+					Logger.Debug($"Совпадение: \"{match.Value}\". Группы: {_grp}");
 					var memeName = groups[1].Value;
 					var foundMeme = memes.Find(m => m.Name.ToLower() == memeName.ToLower());
 
@@ -130,7 +178,10 @@ namespace MematorSQL.Logic
 					else
 					{
 						memes.Add(new Meme(memeName, new Image(file)));
+						_memesCount++;
 					}
+					_imagesCount++;
+					
 				}
 				catch (Exception e)
 				{
@@ -138,31 +189,45 @@ namespace MematorSQL.Logic
 					Logger.Error(e.Message);
 				}
 			}
-
-			db.AddRange(memes);
+			sw.Stop();
+			Logger.Success($"Время затраченное на сканирование: {((int)sw.Elapsed.TotalMilliseconds)} мс");
 			Logger.Success("Заполнение завершено!");
-			if (_warnings > 0)
-			{
-				Logger.Warning("\tПредупреждений: "+_warnings);
-			}
-			if (_errors > 0)
-			{
-				Logger.Warning("\tОшибок: "+ _errors);
-			}
 
-			warnings += _warnings;
-			errors += _errors;
-
-			Stopwatch sw = new Stopwatch();
+			sw = new Stopwatch();
 			sw.Start();
+			db.Memes.AddRange(memes);
 			db.SaveChanges();
 			sw.Stop();
-			Logger.Success("Время затраченное на запись: " + ((int)sw.Elapsed.TotalMilliseconds) + " мс");
 
-			TestFirstEntry(db);
+			Logger.Success($"Время затраченное на запись: {((int)sw.Elapsed.TotalMilliseconds)} мс. " +
+				$"Записано {_memesCount} мемов, содержащих {_imagesCount} картинок");
+			PrintWarnings(_warnings, _errors);
+			warnings += _warnings;
+			errors += _errors;
 		}
 
-		private static void TestFirstEntry(AppContext db)
+		/// <summary>
+		/// Выводит в консоль сообщения о количестве предупреждений и ошибок при их наличии
+		/// </summary>
+		/// <param name="warns">Количество предупреждений</param>
+		/// <param name="errs">Количество ошибок</param>
+		private static void PrintWarnings(int warns, int errs)
+		{
+			if (warns > 0)
+			{
+				Logger.Warning("\tПредупреждений: " + warns);
+			}
+			if (errs > 0)
+			{
+				Logger.Warning("\tОшибок: " + errs);
+			}
+		}
+
+		/// <summary>
+		/// Пытается получить первый элемент базы данных для проверки работоспособности</summary>
+		/// <param name="db">Контекст БД</param>
+		[Obsolete("Рекомендуется удалить метод после отладки взаимодействия с БД")]
+		private static void TestMemesFirstEntry(AppContext db)
 		{
 			Stopwatch sw = new Stopwatch();
 			sw.Start();
