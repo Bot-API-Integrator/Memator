@@ -5,6 +5,7 @@ namespace MematorSQL
 {
 	class Program
 	{
+		private const int kafkaPort = 9092;
 		static void Main(string[] args)
 		{
 			Logger.Log("Запущен Memator v 0.2 pre-apha-in-dev-please-do-not-use-that-shit-god-please-no");

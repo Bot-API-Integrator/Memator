@@ -32,8 +32,14 @@ namespace MematorSQL.Logic
 		{
 			String hashName = url.GetHashCode() + (url.GetHashCode() * 17 * 23).ToString("X")+".png";
 			String fileName = DownloadToFile(url, hashName);
+			using (AppContext db = new AppContext())
+			{
+				db.RandomMemes.Add(new RandomMeme(hashName, new RandomImage(fileName)));
+				db.SaveChanges();
+			}
 		}
 
+		[Obsolete]
 		public static void AddRandomMemeFromBase64(String base64)
 		{
 			String hashName = base64.GetHashCode() + (base64.GetHashCode() * 17 * 23).ToString("X") + ".png";
