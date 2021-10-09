@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MematorSQL.Util;
 
 namespace MematorSQL.Types
 {
@@ -14,6 +15,11 @@ namespace MematorSQL.Types
 		public string FileName { get; set; }
 
 		public RandomImage() { }
+		public RandomImage(Base64File file) 
+		{
+			FileName = file.Name;
+			Base64 = file.Base64;
+		}
 		public RandomImage(String path)
 		{
 			FileName = path;

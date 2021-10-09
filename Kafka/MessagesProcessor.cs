@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MematorSQL.Logic
+namespace MematorSQL.Kafka
 {
-	class TaskManager
+	public static class MessagesProcessor
 	{
+
 	}
 }
