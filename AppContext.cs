@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace MematorSQL
 {
+	/// <summary>
+	/// docker run -e POSTGRES_PASSWORD=25565 -e POSTGRES_USER=postgres -e POSTGRES_DB=memedb -p 5432:5432 -d postgres
+	/// </summary>
 	public class AppContext : DbContext
 	{
 		private const string _connectionString = "Host=localhost;Port=5432;Database=memedb;Username=postgres;Password=25565";
