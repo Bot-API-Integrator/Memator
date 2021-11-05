@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using MematorSQL.Types;
+using MematorSQL.Util;
 
 namespace MematorSQL.Logic
 {
@@ -234,21 +235,12 @@ namespace MematorSQL.Logic
 			savePath = Path.Combine(assetsPath, _savedImagesFolderName);
 
 			Logger.Debug("Проверка директорий...");
-			EnsureExists(assetsPath);
-			EnsureExists(memesPath);
-			EnsureExists(randomPath);
-			EnsureExists(savePath);
+			IO.EnsureExists(assetsPath);
+			IO.EnsureExists(memesPath);
+			IO.EnsureExists(randomPath);
+			IO.EnsureExists(savePath);
 		}
 
-		private static void EnsureExists(String path)
-		{
-			if (!Directory.Exists(path))
-			{
-				Logger.Debug($"[{path}] не существует. Создание...");
-				Directory.CreateDirectory(path);
-				return;
-			}
-			Logger.Debug($"[{path}] Существует.");
-		}
+		
 	}
 }

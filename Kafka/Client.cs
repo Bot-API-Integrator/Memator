@@ -4,10 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MematorSQL.Logic
+namespace MematorSQL.Kafka
 {
-	public static class DbController
+	public class Client
 	{
+		public static void RecieveMessage(RecieveMessage message)
+		{
 
+		}
 	}
 }

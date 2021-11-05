@@ -38,12 +38,14 @@ namespace MematorSQL.Logic
 				db.SaveChanges();
 			}
 		}
-
-		[Obsolete]
-		public static void AddRandomMemeFromBase64(String base64)
+		
+		public static void AddRandomMemeFromBase64(Base64File base64)
 		{
-			String hashName = base64.GetHashCode() + (base64.GetHashCode() * 17 * 23).ToString("X") + ".png";
-			String fileName = Base64ToFile(base64, hashName);
+			using (AppContext db = new AppContext())
+			{
+				db.RandomMemes.Add(new RandomMeme(base64.Name, new RandomImage(base64)));
+				db.SaveChanges();
+			}
 		}
 
 		private static String Base64ToFile(String base64, String fileName)
